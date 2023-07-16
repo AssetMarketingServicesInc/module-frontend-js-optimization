@@ -1,15 +1,15 @@
 {
-  "name": "creativestyle/magesuite-magepack",
-  "description": "Module responsible for handling advanced JavaScript bundling.",
-  "homepage": "https://creativestyle.de",
-  "license": "OSL-3.0",
+  "name": "amsi-corp/module-frontend-js-optimization",
+  "description": "Magento module for optimizations of frontend JavaScript delivery",
+  "homepage": "https://github.com/AssetMarketingServicesInc/module-frontend-js-optimization/",
+  "license": "proprietary",
   "type": "magento2-module",
   "autoload": {
     "files": [
       "registration.php"
     ],
     "psr-4": {
-      "MageSuite\\Magepack\\": ""
+      "Ams\\FrontendJsOptimization\\": ""
     }
   }
 }
