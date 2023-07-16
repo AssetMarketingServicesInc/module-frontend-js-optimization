@@ -13,34 +13,19 @@ use Magento\Framework\View\Asset\File;
  */
 class FileManager
 {
-    /**
-     * @var AssetRepository
-     */
-    private $assetRepo;
-
-    /**
-     * @var FileFallbackContext
-     */
-    private $staticContext;
-
-    /**
-     * @param AssetRepository $assetRepo
-     */
-    public function __construct(AssetRepository $assetRepo)
-    {
-        $this->assetRepo = $assetRepo;
-        $this->staticContext = $assetRepo->getStaticViewFileContext();
+    public function __construct(
+        private AssetRepository $assetRepo
+    ) {
     }
 
     /**
      * Create a view asset for default RequireJS config.
-     *
-     * @param string $fileName
-     * @return File
      */
     public function createRequireJsConfigAsset(string $fileName): File
     {
-        $relPath = $this->staticContext->getConfigPath() . '/' . $fileName;
-        return $this->assetRepo->createArbitrary($relPath, '');
+        return $this->assetRepo->createArbitrary(
+            $this->assetRepo->getStaticViewFileContext()->getConfigPath() . '/' . $fileName,
+            ''
+        );
     }
 }
