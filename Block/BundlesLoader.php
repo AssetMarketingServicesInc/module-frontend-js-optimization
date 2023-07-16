@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace MageSuite\Magepack\Block;
@@ -130,7 +131,6 @@ class BundlesLoader extends Template
                 }, $prefetchBundles)
             );
         }
-
         return [];
     }
 
@@ -151,7 +151,7 @@ class BundlesLoader extends Template
     }
 
     /**
-     *  Adds given bundle configuration to the head scripts.
+     * Adds given bundle configuration to the head scripts.
      */
     protected function _addBundleConfig($bundleConfigPath) {
         if (!$bundleConfigPath) {
@@ -190,7 +190,6 @@ class BundlesLoader extends Template
             $configPaths[] = $this->minification->addMinifiedSign($commonBundle['config_path']);
         }
 
-
         $pageBundles = $this->getPageBundles() ?? [];
         foreach ($pageBundles as $pageBundle) {
             $configPaths[] = $this->minification->addMinifiedSign($pageBundle['config_path']);
@@ -198,5 +197,4 @@ class BundlesLoader extends Template
 
         return array_reverse($configPaths);
     }
-
 }
