@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace MageSuite\Magepack\Block;
+namespace Ams\FrontendJsOptimization\ViewModel;
 
-use MageSuite\Magepack\Model\FileManager;
-use Magento\Framework\View\Element\Template\Context;
+use Ams\FrontendJsOptimization\Model\FileManager;
 use Magento\Framework\Filesystem\DirectoryList;
 use Magento\Framework\View\Page\Config as PageConfig;
 use Magento\Framework\RequireJs\Config as RequireJsConfig;
@@ -14,69 +13,20 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Store\Model\ScopeInterface;
 
-/**
- * Block needed to handle JS bundles in layout.
- */
-class BundlesLoader extends Template
+class BundlesLoader
 {
     private const XML_PATH_ENABLE_MAGEPACK_BUNDLING = 'dev/js/enable_magepack_js_bundling';
 
-    /**
-     * @var DirectoryList
-     */
-    private $dir;
-
-    /**
-     * @var FileManager
-     */
-    private $fileManager;
-
-    /**
-     * @var PageConfig
-     */
-    protected $pageConfig;
-
-    /**
-     * @var ScopeConfigInterface
-     */
-    private $scopeConfig;
-
-    /**
-     * @var RequireJsConfig
-     */
-    private $requireJsConfig;
-
-    /**
-     * @var string
-     */
     protected $_template = 'MageSuite_Magepack::bundles-loader.phtml';
 
-    /**
-     * @param Context $context
-     * @param DirectoryList $dir
-     * @param FileManager $fileManager
-     * @param PageConfig $pageConfig
-     * @param ScopeConfigInterface $scopeConfig
-     * @param RequireJsConfig $requireJsConfig
-     * @param array $data
-     */
     public function __construct(
-        Context $context,
-        DirectoryList $dir,
-        FileManager $fileManager,
-        PageConfig $pageConfig,
-        RequireJsConfig $requireJsConfig,
-        ScopeConfigInterface $scopeConfig,
-        Minification $minification,
-        array $data = []
+        private DirectoryList $dir,
+        private FileManager $fileManager,
+        private PageConfig $pageConfig,
+        private RequireJsConfig $requireJsConfig,
+        private ScopeConfigInterface $scopeConfig,
+        private Minification $minification
     ) {
-        $this->dir = $dir;
-        $this->fileManager = $fileManager;
-        $this->pageConfig = $pageConfig;
-        $this->scopeConfig = $scopeConfig;
-        $this->requireJsConfig = $requireJsConfig;
-        $this->minification = $minification;
-        parent::__construct($context, $data);
     }
 
     /**
@@ -162,10 +112,7 @@ class BundlesLoader extends Template
 
         $bundleConfigAsset = $this->fileManager->createRequireJsConfigAsset($bundleConfigPath);
         $bundleConfigRelPath = $bundleConfigAsset->getFilePath();
-
-        $staticDir = $this->dir->getPath('static');
-
-        $bundleConfigAbsPath = $staticDir . '/' . $bundleConfigRelPath;
+        $bundleConfigAbsPath = $this->dir->getPath('static') . '/' . $bundleConfigRelPath;
 
         /**
          * Add bundle config before main requirejs-config.js file to make sure all modules are loaded from them.
@@ -194,7 +141,6 @@ class BundlesLoader extends Template
         foreach ($pageBundles as $pageBundle) {
             $configPaths[] = $this->minification->addMinifiedSign($pageBundle['config_path']);
         }
-
         return array_reverse($configPaths);
     }
 }
