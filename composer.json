@@ -36,5 +36,5 @@
       "@phpcs-paths",
       "@phpcs-default-standard"
     ]
-  },
+  }
 }

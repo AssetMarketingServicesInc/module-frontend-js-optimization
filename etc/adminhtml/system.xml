@@ -3,7 +3,7 @@
     <system>
         <section id="dev">
             <group id="js">
-                <field id="enable_magepack_js_bundling" type="select" showInDefault="1" canRestore="1">
+                <field id="enable_frontend_js_optimization" type="select" showInDefault="1" canRestore="1">
                     <label>Enable Frontend JavaScript Optimizations</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>

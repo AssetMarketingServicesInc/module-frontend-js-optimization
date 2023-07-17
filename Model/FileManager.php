@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MageSuite\Magepack\Model;
+namespace Ams\FrontendJsOptimization\Model;
 
 use Magento\Framework\View\Asset\File\FallbackContext as FileFallbackContext;
 use Magento\Framework\View\Asset\Repository as AssetRepository;

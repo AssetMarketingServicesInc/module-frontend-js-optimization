@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Ams\FrontendJsOptimization\ViewModel;
 
 use Ams\FrontendJsOptimization\Model\FileManager;
+use Ams\FrontendJsOptimization\Model\Config\IsEnabledInterface;
 use Magento\Framework\Filesystem\DirectoryList;
 use Magento\Framework\View\Page\Config as PageConfig;
 use Magento\Framework\RequireJs\Config as RequireJsConfig;
@@ -15,29 +16,14 @@ use Magento\Store\Model\ScopeInterface;
 
 class BundlesLoader
 {
-    private const XML_PATH_ENABLE_MAGEPACK_BUNDLING = 'dev/js/enable_magepack_js_bundling';
-
-    protected $_template = 'MageSuite_Magepack::bundles-loader.phtml';
-
     public function __construct(
         private DirectoryList $dir,
         private FileManager $fileManager,
         private PageConfig $pageConfig,
         private RequireJsConfig $requireJsConfig,
-        private ScopeConfigInterface $scopeConfig,
-        private Minification $minification
+        private Minification $minification,
+        private IsEnabledInterface $isEnabled
     ) {
-    }
-
-    /**
-     * @return bool
-     */
-    public function isEnabled()
-    {
-        return $this->scopeConfig->isSetFlag(
-            self::XML_PATH_ENABLE_MAGEPACK_BUNDLING,
-            ScopeInterface::SCOPE_STORE
-        );
     }
 
     /**
@@ -46,7 +32,7 @@ class BundlesLoader
     public function getCommonBundleUrl()
     {
         $commonBundle = $this->getData('common_bundle');
-        if ($commonBundle && $this->isEnabled()) {
+        if ($commonBundle && $this->isEnabled->get()) {
             return $this->getViewFileUrl($commonBundle['bundle_path']);
         }
 
@@ -59,7 +45,7 @@ class BundlesLoader
     public function getPageBundlesUrls()
     {
         $pageBundles = $this->getData('page_bundles');
-        if (!empty($pageBundles) && $this->isEnabled()) {
+        if (!empty($pageBundles) && $this->isEnabled->get()) {
             return array_map(function($pageBundle) {
                 return $this->getViewFileUrl($pageBundle['bundle_path']);
             }, $pageBundles);
@@ -74,7 +60,7 @@ class BundlesLoader
     public function getPrefetchBundlesUrls()
     {
         $prefetchBundles = $this->getData('prefetch_bundles');
-        if (!empty($prefetchBundles) && $this->isEnabled()) {
+        if (!empty($prefetchBundles) && $this->isEnabled->get()) {
             return array_values(
                 array_map(function($prefetchBundle) {
                     return $this->getViewFileUrl($prefetchBundle);
@@ -91,13 +77,11 @@ class BundlesLoader
      */
     protected function _prepareLayout()
     {
-        if ($this->isEnabled()) {
+        if ($this->isEnabled->get()) {
             foreach ($this->_getBundlesConfigPaths() as $bundleConfigPath) {
                 $this->_addBundleConfig($bundleConfigPath);
             }
         }
-
-        return parent::_prepareLayout();
     }
 
     /**
