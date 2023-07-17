@@ -1,32 +1,38 @@
 <?php
-/** @var \MageSuite\Magepack\Block\BundlesLoader $block */
 
-$commonBundleUrl = $block->getCommonBundleUrl();
-$pageBundlesUrls = $block->getPageBundlesUrls();
-$prefetchBundlesUrls = $block->getPrefetchBundlesUrls();
+declare(strict_types=1);
+
+/**
+ * @var \Ams\FrontendJsOptimization\ViewModel\BundlesLoader $viewModel
+ * @var \Magento\Framework\Escaper $escaper
+ */
+
+$viewModel = $block->getData('view_model');
+
+$commonBundleUrl = $viewModel->getCommonBundleUrl();
+$pageBundlesUrls = $viewModel->getPageBundlesUrls();
+$prefetchBundlesUrls = $viewModel->getPrefetchBundlesUrls();
 ?>
 
 <?php if ($commonBundleUrl): ?>
-<link rel="prefetch" as="script" href="<?= $commonBundleUrl; ?>"/>
-<?php endif; ?>
+<link rel="prefetch" href="<?= $escaper->escapeUrl($commonBundleUrl) ?>"/>
+<?php endif ?>
 
-<?php foreach($pageBundlesUrls as $pageBundleUrl): ?>
-<link rel="prefetch" as="script" href="<?= $pageBundleUrl; ?>"/>
-<?php endforeach; ?>
+<?php foreach ($pageBundlesUrls as $pageBundleUrl): ?>
+<link rel="prefetch" href="<?= $escaper->escapeUrl($pageBundleUrl) ?>"/>
+<?php endforeach ?>
 
-<?php if (!empty($prefetchBundlesUrls)): ?>
+<?php if ($prefetchBundlesUrls): ?>
 <script>
 (function(root, doc) {
-    var headElement,
-        bundleLink,
-        bundleUrls = <?= json_encode($prefetchBundlesUrls); ?>,
-        idleCallback = root.requestIdleCallback || root.setTimeout;
-    // Prefetch all bundles via link tags when browser gets idle.
-    if (headElement = doc.querySelector('head')) {
+    let headElement = doc.querySelector('head')
+    let bundleUrls = <?= json_encode($prefetchBundlesUrls) ?>
+    let idleCallback = root.requestIdleCallback || root.setTimeout
+    if (headElement) {
         root.addEventListener('load', function() {
             idleCallback(function() {
                 bundleUrls.forEach(function(bundleUrl) {
-                    bundleLink = doc.createElement('link');
+                    let bundleLink = doc.createElement('link');
                     bundleLink.rel = 'prefetch';
                     bundleLink.as = 'script';
                     bundleLink.href = bundleUrl;
@@ -37,4 +43,4 @@ $prefetchBundlesUrls = $block->getPrefetchBundlesUrls();
     }
 }(window, document))
 </script>
-<?php endif; ?>
+<?php endif ?>
