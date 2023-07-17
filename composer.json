@@ -4,6 +4,13 @@
   "homepage": "https://github.com/AssetMarketingServicesInc/module-frontend-js-optimization/",
   "license": "proprietary",
   "type": "magento2-module",
+  "require": {
+    "magento/framework": "^103.0"
+  },
+  "require-dev": {
+    "amsi-corp/magento-coding-standard": ">=6",
+    "phpunit/phpunit": "^9.5"
+  },
   "autoload": {
     "files": [
       "registration.php"
@@ -11,5 +18,23 @@
     "psr-4": {
       "Ams\\FrontendJsOptimization\\": ""
     }
-  }
+  },
+  "config": {
+    "sort-packages": true,
+    "allow-plugins": {
+      "magento/composer-dependency-version-audit-plugin": false
+    }
+  },
+  "scripts": {
+    "phpcs-default-standard": "vendor/bin/phpcs --config-set default_standard AmsMagento2",
+    "phpcs-paths": "vendor/bin/phpcs --config-set installed_paths vendor/phpcompatibility/php-compatibility/PHPCompatibility,vendor/amsi-corp/coding-standard/src/Standards/Ams,vendor/magento/magento-coding-standard/Magento2,vendor/amsi-corp/magento-coding-standard/src/Standards/AmsMagento2",
+    "post-install-cmd": [
+      "@phpcs-paths",
+      "@phpcs-default-standard"
+    ],
+    "post-update-cmd": [
+      "@phpcs-paths",
+      "@phpcs-default-standard"
+    ]
+  },
 }
